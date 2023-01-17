@@ -65,3 +65,12 @@ input {
   width:auto;
   text-size-adjust: 50%;
 }
+
+.quote-box{
+  padding: 2%;
+  color: black;
+  margin: 5%;
+  background-color: antiquewhite;
+  border-radius: 25px;
+
+}
