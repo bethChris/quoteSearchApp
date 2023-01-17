@@ -1,19 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
-import { SignUpPage } from './pages/SignUpPage'
-import { QuotesSearchPage } from './pages/QuotesSearchPage'
+import React from 'react';
+import {useState} from 'react';
 
 function App() {
-  const [count, setCount] = useState(0) 
+  
+  
+  const [inputValue, setInputValue] = useState("");
+  const [randQ, setRandQ] = useState("");
+
+  const handleInputChange = Event => {
+    setInputValue(Event.target.value);
+  }
+
+  const handleSubmit = Event => {
+    Event.preventDefault();
+
+    console.log("submitted");
+    apiGet();
+    
+  }
+
+  const apiGet = () => {
+    let processedInput = inputValue.replace(" ", "%");
+    
+    console.log(processedInput);
+
+    fetch("https://api.quotable.io/search/quotes?query=" + inputValue + "&fields=author")
+    .then((response) => response.json())
+    .then((json) => {
+      console.log("https://api.quotable.io/search/quotes?query=" + inputValue + "&fields=author");
+      setRandQ(json.content);
+    });
+    
+  }
 
   return (
-    <div className="App">
+    <main>
+      <h2>Our Input: {inputValue}</h2>
+      <form onSubmit={handleSubmit}>
+        <input value={inputValue} onChange={handleInputChange} placeholder='Martha Stewart...' type="text"/>
+      </form>
+
       <div>
-        <QuotesSearchPage/>
+        {randQ}
       </div>
-    </div>
-  )
+    </main>
+
+  );
 }
 
-export default App
+export default App;
