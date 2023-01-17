@@ -13,14 +13,20 @@ function App() {
     setInputValue(Event.target.value);
   }
 
+  //processes the submit 
   const handleSubmit = Event => {
     Event.preventDefault();
 
-    console.log("submitted");
-    apiGetSearch();
-    apiGetRandom();
+    if (inputValue){ //if there's actually input
+      apiGetSearch();
+      apiGetRandom();
+    }
+
+    console.log("submitted"); 
   }
 
+
+  //fetch's the random quote 
   const apiGetRandom = () => {
     
     fetch("https://api.quotable.io/random")
@@ -31,6 +37,8 @@ function App() {
     
   }
 
+
+  //fetch's the quote based on the search input
   const apiGetSearch = () => {
     let processedInput = inputValue.replace(" ", "+");
 
@@ -40,30 +48,31 @@ function App() {
       let quotes = json['results']
       setSearchQs(quotes);
     });
-
-    console.log("https://api.quotable.io/search/quotes?query=" + processedInput + "&fields=author");
   }
 
 
+  //returns main html body
   return (
     <main>
-      <h2>Our Input: {inputValue}</h2>
-      <form onSubmit={handleSubmit}>
-        <input value={inputValue} onChange={handleInputChange} placeholder='Martha Stewart...' type="text"/>
-      </form>
+      <body>
+        <h2>Quote Search!</h2>
+        <form onSubmit={handleSubmit}>
+          <input value={inputValue} onChange={handleInputChange} placeholder='Martha Stewart...' type="text"/>
+        </form>
 
-      <div>
-        {randQ}
-      </div>
+        <div>
+          {randQ}
+        </div>
 
-      <div>
-      <ul>
-        {Object.keys(searchQs).map((key, index) => (
-            <div className="quote-box" key={index}>{JSON.stringify(searchQs[key]['content'])} - {JSON.stringify(searchQs[key]['author'])}</div>
-        ))}
-      </ul>
-      </div>
-      
+        <div>
+        
+          {Object.keys(searchQs).map((key, index) => (
+              <div className="quote-box" key={index}>{JSON.stringify(searchQs[key]['content'])} - {JSON.stringify(searchQs[key]['author'])}</div>
+          ))}
+
+        </div>
+
+      </body>
     </main>
 
   );
