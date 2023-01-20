@@ -1,5 +1,5 @@
 import './App.css'
-import React from 'react';
+import React, { useEffect } from 'react';
 import {useState} from 'react';
 
 function App() {
@@ -7,11 +7,15 @@ function App() {
   
   const [inputValue, setInputValue] = useState("");
   const [randQ, setRandQ] = useState("");
-  const [searchQs, setSearchQs] = useState("");
+  const [searchQs, setSearchQs] = useState([]);
 
+  
+
+  //updates input value
   const handleInputChange = Event => {
     setInputValue(Event.target.value);
   }
+
 
   //processes the submit 
   const handleSubmit = Event => {
@@ -37,45 +41,62 @@ function App() {
     
   }
 
+ 
 
   //fetch's the quote based on the search input
   const apiGetSearch = () => {
-    let processedInput = inputValue.replace(" ", "+");
+    let processedInput = inputValue.replace(" ", "-");
 
-    fetch("https://api.quotable.io/search/quotes?query=" + processedInput + "&fields=author")
+    fetch("https://api.quotable.io/quotes?author=" + processedInput)
     .then((response) => response.json())
     .then((json) => {
-      let quotes = json['results']
+      let quotes = json.results
       setSearchQs(quotes);
     });
   }
 
 
   //returns main html body
+
   return (
+
     <main>
-      <body>
         <h2>Quote Search!</h2>
         <form onSubmit={handleSubmit}>
           <input value={inputValue} onChange={handleInputChange} placeholder='Martha Stewart...' type="text"/>
         </form>
 
-        <div>
-          {randQ}
-        </div>
+        {searchQs.length <= 0 && 
+          <div>
+            {randQ}
+          </div>
+        }
+
+       
 
         <div>
-        
-          {Object.keys(searchQs).map((key, index) => (
-              <div className="quote-box" key={index}>{JSON.stringify(searchQs[key]['content'])} - {JSON.stringify(searchQs[key]['author'])}</div>
-          ))}
-
+            {/* gets searchQs keys[] then maps the keys and index to use for displaying content*/}
+            {Object.keys(searchQs).map((key, index) => (
+                <div className="quote-box" key={index}>{searchQs[key]['content']} - {searchQs[key]['author']}</div>
+            ))}
+    
         </div>
-
-      </body>
     </main>
 
-  );
+
+   );
+      
+  
+        
+
+
+
+        
+
+        
+   
+
+ 
 }
 
 export default App;
