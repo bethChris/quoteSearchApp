@@ -1,19 +1,15 @@
 import './App.css'
-import React, { useEffect } from 'react';
-import {useState} from 'react';
-
+import React, { useEffect, useState, FormEvent } from 'react';
 let ID_COUNT = 0;
 
 interface Quote{
-  id: number,
+  _id: number,
   content: string,
   author: string
 }
 
 
 function App() {
-
-
   const [inputValue, setInputValue] = useState("");
   const [randQ, setRandQ] = useState<Quote>();
   const [searchQs, setSearchQs] = useState<Quote[]>([]);
@@ -25,7 +21,7 @@ function App() {
     .then((response) => response.json())
     .then((json) => {
       var quote = {
-        id: ID_COUNT++,
+        _id: json._id,
         content: json.content,
         author: json.author
       }
@@ -37,15 +33,9 @@ function App() {
   }, [])
 
 
-  //updates input value
-  const handleInputChange = Event => {
-    setInputValue(Event.target.value);
-  }
-
-
   //processes the submit 
-  const handleSubmit = (Event) => {
-    Event.preventDefault();
+  function handleSubmit(e: FormEvent<HTMLFormElement>){
+    e.preventDefault();
 
     if (inputValue){ //if there's actually input
       apiGetSearch();
@@ -62,26 +52,19 @@ function App() {
     fetch("https://usu-quotes-mimic.vercel.app/api/search?query="+ inputValue)
     .then((response) => response.json())
     .then((json) => {
-
-      console.log("made it here");
       var quoteList: Array<Quote> = []; //new empty Quote array
 
       for (var i = 0; i < json.count; i++){
         var quote = {
-          id: ID_COUNT++,
+          _id: json.results[i]._id,
           content: json.results[i].content,
           author: json.results[i].author
         }  
-
         quoteList[i] = quote;
       }
-
-      
       setSearchQs(quoteList);
-      
     });
   }
-
 
 
   //returns main html body
@@ -89,26 +72,30 @@ function App() {
     <main>
         <h2>Quote Search!</h2>
         <form onSubmit={handleSubmit}>
-          <input value={inputValue} onChange={handleInputChange} placeholder='Martha Washington...' type="text"/>
+          <div>
+            <input value={inputValue} onChange={e => setInputValue(e.target.value)} placeholder='Martha Washington...' type="text"/>
+          </div>
         </form>
 
         {searchQs.length <= 0 && 
-          <div key={randQ?.id}>
-            {randQ?.content} 
-            <p> - {randQ?.author}</p>
+          <div>
+            <div className="randQ-box" key={randQ?._id}>
+              {randQ?.content} 
+              <p className='author'> - {randQ?.author}</p>
+            </div>
           </div>
         }
 
         <div>
             {/* gets searchQs keys[] then maps the keys and index to use for displaying content*/}
             {searchQs.map((quote) => (
-                <div className="quote-box" key={quote.id}>{quote.content} - {quote.author}</div>
+                <div className="quote-box" key={quote._id}>{quote.content} 
+                <p className="author"> - {quote.author} </p>
+                </div>
             ))}
         </div>
     </main>
    );
 }
-
-//Notes for future me:
 
 export default App;
