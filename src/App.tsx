@@ -69,7 +69,7 @@ function App() {
 
   //returns main html body
   return (
-    <main>
+    <main >
         <h2>Quote Search!</h2>
         <form onSubmit={handleSubmit}>
           <div>
@@ -78,20 +78,18 @@ function App() {
         </form>
 
         {searchQs.length <= 0 && 
-          <div>
-            <div className="randQ-box" key={randQ?._id}>
-              {randQ?.content} 
-              <p className='author'> - {randQ?.author}</p>
-            </div>
+          <div className="randQ-box" key={randQ?._id}>
+            {randQ?.content} 
+            <p className='author'> - {randQ?.author}</p>
           </div>
         }
 
         <div>
-            {/* gets searchQs keys[] then maps the keys and index to use for displaying content*/}
             {searchQs.map((quote) => (
-                <div className="quote-box" key={quote._id}>{quote.content} 
+              <div className="quote-box" key={quote._id}>
+                {quote.content} 
                 <p className="author"> - {quote.author} </p>
-                </div>
+              </div>
             ))}
         </div>
     </main>
